@@ -5,12 +5,21 @@ A comprehensive Java Swing application that revolutionizes blood donation manage
 ## ✨ Features
 
 ### 🎯 Multi-Role System
-- **Donors**: Register, manage availability, respond to blood requests
-- **Patients**: Search for compatible donors, send blood requests
-- **Admins**: Monitor system activity, manage users, track donations
 
+- **Admins**: Monitor system activity, manage users, track donations
 <img width="1234" height="867" alt="Screenshot 2025-10-18 010615" src="https://github.com/user-attachments/assets/3fc0f721-6d33-485b-ac6d-80b8e558c413" />
 <img width="1920" height="1020" alt="Screenshot 2025-10-18 010640" src="https://github.com/user-attachments/assets/c2395fac-0296-46f5-863f-719a0187e6ce" />
+<img width="1234" height="867" alt="image" src="https://github.com/user-attachments/assets/6f266e55-2fed-4f08-b1b1-647cbaf24e57" />
+<img width="1234" height="867" alt="Screenshot 2025-10-18 025032" src="https://github.com/user-attachments/assets/17dd5660-a112-4ccd-9227-3f4f326dfd67" />
+<img width="1234" height="867" alt="Screenshot 2025-10-18 025022" src="https://github.com/user-attachments/assets/388b1c19-fffc-4295-bfcf-729601703278" />
+
+- **Donors**: Register, manage availability, respond to blood requests
+<img width="1234" height="867" alt="Screenshot 2025-10-18 023710" src="https://github.com/user-attachments/assets/455a63ab-3f14-41c3-a94c-d702ac14bb01" />
+<img width="1920" height="1059" alt="Screenshot 2025-10-18 023722" src="https://github.com/user-attachments/assets/d7c68ec2-dbd9-4bec-91a7-8154180a45c6" />
+<img width="449" height="267" alt="Screenshot 2025-10-18 023733" src="https://github.com/user-attachments/assets/41de8998-d69a-45f8-9ade-9c9a99d2e859" />
+<img width="1920" height="1059" alt="Screenshot 2025-10-18 023743" src="https://github.com/user-attachments/assets/bbb2b57a-7b87-455d-9624-1e95bb7075be" />
+
+- **Patients**: Search for compatible donors, send blood requests
 
 
 ### 🔧 Technical Highlights
