@@ -113,9 +113,10 @@ public class DonorDashboard extends JPanel {
                 int modelRow = requestsTable.convertRowIndexToModel(selectedRow);
                 DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
 
-                int requestId = (Integer) model.getValueAt(modelRow, 0);
-                String patientName = (String) model.getValueAt(modelRow, 2);
-                String bloodGroup = (String) model.getValueAt(modelRow, 3);
+                // CORRECTED COLUMN INDICES:
+                int requestId = (Integer) model.getValueAt(modelRow, 0);        // Request ID (hidden)
+                String patientName = (String) model.getValueAt(modelRow, 2);    // Patient Name
+                String bloodGroup = (String) model.getValueAt(modelRow, 3);     // Blood Group
                 String status = statusCombo.getSelectedItem().toString();
 
                 String message = "";
@@ -175,7 +176,6 @@ public class DonorDashboard extends JPanel {
         }
 
         private int getPatientIdFromRequest(int requestId) throws SQLException {
-            // Helper method to get patient ID from request
             String sql = "SELECT patient_id FROM requests WHERE request_id = ?";
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -188,7 +188,7 @@ public class DonorDashboard extends JPanel {
             }
             return -1;
         }
-    }
+    } // ← Closing brace for RespondAction class
 
     private void updateRequestsTable(List<Object[]> requests) {
         DefaultTableModel model = new DefaultTableModel(
@@ -205,9 +205,15 @@ public class DonorDashboard extends JPanel {
 
         requestsTable.setModel(model);
 
+        // Hide ID columns instead of removing them
         if (requestsTable.getColumnCount() > 0) {
-            requestsTable.removeColumn(requestsTable.getColumnModel().getColumn(0));
-            requestsTable.removeColumn(requestsTable.getColumnModel().getColumn(0));
+            requestsTable.getColumnModel().getColumn(0).setMinWidth(0);
+            requestsTable.getColumnModel().getColumn(0).setMaxWidth(0);
+            requestsTable.getColumnModel().getColumn(0).setWidth(0);
+
+            requestsTable.getColumnModel().getColumn(1).setMinWidth(0);
+            requestsTable.getColumnModel().getColumn(1).setMaxWidth(0);
+            requestsTable.getColumnModel().getColumn(1).setWidth(0);
         }
     }
-}
+} // ← Closing brace for DonorDashboard class
