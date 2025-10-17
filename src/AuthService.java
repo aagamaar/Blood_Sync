@@ -72,7 +72,7 @@ public class AuthService {
                 }
             }
         }
-        return "Unknown";
+        return "";
     }
 
     public static boolean registerPatient(String username, String password, String name, String bloodGroup, String location) throws SQLException {
