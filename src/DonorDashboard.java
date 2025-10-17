@@ -56,23 +56,26 @@ public class DonorDashboard extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(requestsTable);
         requestsPanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        // Enhanced control panel
-        JPanel controlPanel = new JPanel(new FlowLayout());
-        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        // Enhanced control panel - FIXED LAYOUT
+        JPanel controlPanel = new JPanel(new BorderLayout());
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        controlPanel.add(new JLabel("Your Response:"));
+        JPanel responsePanel = new JPanel(new FlowLayout());
+        responsePanel.add(new JLabel("Your Response:"));
         statusCombo = new JComboBox<>(new String[]{"Accepted", "Rejected"});
         statusCombo.setFont(new Font("Arial", Font.BOLD, 12));
-        controlPanel.add(statusCombo);
+        responsePanel.add(statusCombo);
 
         respondButton = new JButton("✅ Submit Response");
         respondButton.setBackground(new Color(0, 153, 0));
         respondButton.setForeground(Color.WHITE);
         respondButton.setFont(new Font("Arial", Font.BOLD, 12));
-        controlPanel.add(respondButton);
+        responsePanel.add(respondButton);
 
         refreshButton = new JButton("🔄 Refresh Requests");
-        controlPanel.add(refreshButton);
+        responsePanel.add(refreshButton);
+
+        controlPanel.add(responsePanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         logoutButton = new JButton("🚪 Logout");
@@ -84,8 +87,7 @@ public class DonorDashboard extends JPanel {
 
         add(welcomeLabel, BorderLayout.NORTH);
         add(requestsPanel, BorderLayout.CENTER);
-        add(controlPanel, BorderLayout.SOUTH);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(controlPanel, BorderLayout.SOUTH);  // This should now be visible
     }
 
     private void refreshRequests() {
