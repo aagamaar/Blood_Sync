@@ -20,6 +20,10 @@ A comprehensive Java Swing application that revolutionizes blood donation manage
 <img width="1920" height="1059" alt="Screenshot 2025-10-18 023743" src="https://github.com/user-attachments/assets/bbb2b57a-7b87-455d-9624-1e95bb7075be" />
 
 - **Patients**: Search for compatible donors, send blood requests
+<img width="1234" height="867" alt="Screenshot 2025-10-18 025757" src="https://github.com/user-attachments/assets/e7d59c08-b38a-4a70-a369-f40923c6060d" />
+<img width="1920" height="1020" alt="Screenshot 2025-10-18 025817" src="https://github.com/user-attachments/assets/2c9a768c-e327-4057-b260-770954b0bafd" />
+<img width="1920" height="1020" alt="Screenshot 2025-10-18 025831" src="https://github.com/user-attachments/assets/73297be8-c096-479b-b3e5-d0e71f787426" />
+<img width="1920" height="1020" alt="Screenshot 2025-10-18 025843" src="https://github.com/user-attachments/assets/864943ba-6ccc-48d8-829c-f20ecc813eee" />
 
 
 ### 🔧 Technical Highlights
