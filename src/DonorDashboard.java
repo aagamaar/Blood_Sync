@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class DonorDashboard extends JPanel {
     private int donorId;
@@ -40,24 +43,39 @@ public class DonorDashboard extends JPanel {
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
+        // Create a more prominent requests panel
+        JPanel requestsPanel = new JPanel(new BorderLayout());
+        requestsPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(204, 0, 0), 2),
+                "📋 Pending Blood Requests"
+        ));
+
         requestsTable = new JTable();
         requestsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        requestsTable.setRowHeight(30);
         JScrollPane tableScrollPane = new JScrollPane(requestsTable);
+        requestsPanel.add(tableScrollPane, BorderLayout.CENTER);
 
+        // Enhanced control panel
         JPanel controlPanel = new JPanel(new FlowLayout());
-        controlPanel.add(new JLabel("Response:"));
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        controlPanel.add(new JLabel("Your Response:"));
         statusCombo = new JComboBox<>(new String[]{"Accepted", "Rejected"});
+        statusCombo.setFont(new Font("Arial", Font.BOLD, 12));
         controlPanel.add(statusCombo);
 
-        respondButton = new JButton("Respond to Selected Request");
+        respondButton = new JButton("✅ Submit Response");
+        respondButton.setBackground(new Color(0, 153, 0));
+        respondButton.setForeground(Color.WHITE);
+        respondButton.setFont(new Font("Arial", Font.BOLD, 12));
         controlPanel.add(respondButton);
 
-        refreshButton = new JButton("Refresh Requests");
+        refreshButton = new JButton("🔄 Refresh Requests");
         controlPanel.add(refreshButton);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        logoutButton = new JButton("Logout");
-
+        logoutButton = new JButton("🚪 Logout");
         buttonPanel.add(logoutButton);
 
         refreshButton.addActionListener(e -> refreshRequests());
@@ -65,7 +83,7 @@ public class DonorDashboard extends JPanel {
         logoutButton.addActionListener(e -> BloodDonationSystemGUI.showLoginScreen());
 
         add(welcomeLabel, BorderLayout.NORTH);
-        add(tableScrollPane, BorderLayout.CENTER);
+        add(requestsPanel, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -86,38 +104,89 @@ public class DonorDashboard extends JPanel {
             int selectedRow = requestsTable.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(DonorDashboard.this,
-                        "Please select a request from the table.", "Error", JOptionPane.ERROR_MESSAGE);
+                        "❌ Please select a blood request from the list above.",
+                        "No Request Selected", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             try {
-                int requestId = (Integer) requestsTable.getValueAt(selectedRow, 0);
-                String patientName = (String) requestsTable.getValueAt(selectedRow, 2);
+                int modelRow = requestsTable.convertRowIndexToModel(selectedRow);
+                DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
+
+                int requestId = (Integer) model.getValueAt(modelRow, 0);
+                String patientName = (String) model.getValueAt(modelRow, 2);
+                String bloodGroup = (String) model.getValueAt(modelRow, 3);
                 String status = statusCombo.getSelectedItem().toString();
+
+                String message = "";
+                int messageType = JOptionPane.QUESTION_MESSAGE;
+
+                if ("Accepted".equals(status)) {
+                    message = "🎉 You're about to ACCEPT the blood request from:\n\n" +
+                            "Patient: " + patientName + "\n" +
+                            "Blood Group Needed: " + bloodGroup + "\n\n" +
+                            "This will notify the patient and help save a life!\n" +
+                            "Are you sure you want to proceed?";
+                } else {
+                    message = "⚠️ You're about to DECLINE the blood request from:\n\n" +
+                            "Patient: " + patientName + "\n" +
+                            "Blood Group Needed: " + bloodGroup + "\n\n" +
+                            "The patient will be notified of your decision.\n" +
+                            "Are you sure you want to proceed?";
+                }
 
                 int response = JOptionPane.showConfirmDialog(
                         DonorDashboard.this,
-                        "Are you sure you want to " + status.toLowerCase() + " the request from " + patientName + "?",
-                        "Confirm Response",
-                        JOptionPane.YES_NO_OPTION
+                        message,
+                        "Confirm Your Decision",
+                        JOptionPane.YES_NO_OPTION,
+                        messageType
                 );
 
                 if (response == JOptionPane.YES_OPTION) {
                     boolean success = DonorService.updateRequestStatus(requestId, status);
                     if (success) {
+                        // Send notification to patient
+                        String notificationMsg = "Donor has " + status.toLowerCase() +
+                                " your blood request for " + bloodGroup;
+                        DonorService.createNotificationForPatient(getPatientIdFromRequest(requestId), notificationMsg);
+
+                        String successMessage = "Accepted".equals(status) ?
+                                "🎉 Thank you! You've accepted the blood request.\nThe patient has been notified of your generous offer!" :
+                                "ℹ️ You've declined the blood request.\nThe patient has been notified.";
+
                         JOptionPane.showMessageDialog(DonorDashboard.this,
-                                "Request " + status.toLowerCase() + " successfully!",
-                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                                successMessage,
+                                "Response Submitted",
+                                JOptionPane.INFORMATION_MESSAGE);
                         refreshRequests();
                     } else {
                         JOptionPane.showMessageDialog(DonorDashboard.this,
-                                "Failed to update request status.", "Error", JOptionPane.ERROR_MESSAGE);
+                                "❌ Failed to update request status. Please try again.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(DonorDashboard.this,
-                        "Error processing response: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        "❌ Error processing response: " + ex.getMessage(),
+                        "System Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
+        }
+
+        private int getPatientIdFromRequest(int requestId) throws SQLException {
+            // Helper method to get patient ID from request
+            String sql = "SELECT patient_id FROM requests WHERE request_id = ?";
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, requestId);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt("patient_id");
+                    }
+                }
+            }
+            return -1;
         }
     }
 

@@ -54,6 +54,20 @@ public class DonorService {
         }
     }
 
+    public static int getPatientIdFromRequest(int requestId) throws SQLException {
+        String sql = "SELECT patient_id FROM requests WHERE request_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, requestId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("patient_id");
+                }
+            }
+        }
+        return -1;
+    }
+
     public static List<String> getPendingRequests(int donorId) throws SQLException {
         List<String> requests = new ArrayList<>();
         String sql = "SELECT r.request_id, p.name AS patient_name, p.blood_group FROM requests r JOIN patients p ON r.patient_id = p.patient_id WHERE r.donor_id = ? AND r.status = 'Pending'";
