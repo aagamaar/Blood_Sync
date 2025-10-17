@@ -9,6 +9,10 @@ A comprehensive Java Swing application that revolutionizes blood donation manage
 - **Patients**: Search for compatible donors, send blood requests
 - **Admins**: Monitor system activity, manage users, track donations
 
+<img width="1234" height="867" alt="Screenshot 2025-10-18 010615" src="https://github.com/user-attachments/assets/3fc0f721-6d33-485b-ac6d-80b8e558c413" />
+<img width="1920" height="1020" alt="Screenshot 2025-10-18 010640" src="https://github.com/user-attachments/assets/c2395fac-0296-46f5-863f-719a0187e6ce" />
+
+
 ### 🔧 Technical Highlights
 - **Frontend**: Java Swing with modern UI components
 - **Backend**: JDBC with MySQL database
